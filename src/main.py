@@ -34,6 +34,7 @@ produtos = []
 vendas = []
 clientes = []
 vendedores = []
+produtos_venda = []
 
 def menu():
     while True:
@@ -127,7 +128,53 @@ def registrar_venda():
     vendedor_id = input("Informe o ID do vendedor: ")
     vendedor = next((v for v in vendedores if v.id_vendedor == vendedor_id), None)
 
-    produtos_venda = []
+    carrinho = Carrinho()
+    while True:
+        print("\n--- CARRINHO ---")
+        print("1 - Adicionar produto")
+        print("2 - Remover produto")
+        print("3 - Listar itens do carrinho")
+        print("0 - Finalizar compra")
+        
+        opc = input("Escolha: ")
+
+        if opc == "1":
+            listar_produtos()
+            prod_id = input("Digite o ID do produto para adicionar: ")
+            produto = next((p for p in produtos if p.id_produto == prod_id), None)
+            if produto:
+                carrinho.adicionar_item(produto)
+                print(f"{produto.nome} adicionado!")
+            else:
+                print("Produto não encontrado!")
+
+        elif opc == "2":
+            carrinho.listar_itens()
+            prod_id = input("Digite o ID do produto para remover: ")
+            produto = next((p for p in carrinho.itens if p.id_produto == prod_id), None)
+            if produto:
+                carrinho.retirar_item(produto)
+            else:
+                print("Esse item não está no carrinho!")
+
+        elif opc == "3":s
+            print("\nItens do carrinho:")
+            carrinho.listar_itens()
+            print(f"Total: R${carrinho.total():.2f}")
+
+        elif opc == "0":
+            break
+        else:
+            print("Opção inválida!")
+
+    # === FINALIZAÇÃO ===
+    if carrinho.itens:
+        venda = Venda(id_venda, cliente, vendedor, carrinho.itens)
+        vendas.append(venda)
+        print("\nVenda registrada com sucesso!")
+        print(f"Total da venda: R${carrinho.total():.2f}")
+    else:
+        print("Carrinho vazio! Venda cancelada.")
     while True:
         listar_produtos()
         prod_id = input("Digite o ID do produto (0 para finalizar): ")
